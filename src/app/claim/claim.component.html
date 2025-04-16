@@ -1,0 +1,86 @@
+
+<section>
+  <div class="example-button-row-list">      
+    <button mat-stroked-button [routerLink]="'/claim_list'">Claim-List</button>
+  </div>
+</section>
+<div class="container mat-elevation-z2">
+  
+  <h2 class="form-heading">Claim Request Form</h2>
+  <div class="con">
+    <form #claimForm="ngForm" (ngSubmit)="saveEmployee(claimForm)">
+      <mat-form-field appearance="outline" class="input">
+        <mat-label>Select Claim Type</mat-label>
+        <mat-select [(ngModel)]="claims.claimType" name="claimType">
+          <mat-option value="CASHLESS">Cashless</mat-option>
+          <mat-option value="REIMBURSEMENT">Reimbursement</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="input">
+        <mat-label>Enter Claim Amount</mat-label>
+        <input matInput placeholder="Enter Amount" type="number" name="claimAmount" [(ngModel)]="claims.claimAmount" />
+        <mat-hint>In INR</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="input">
+        <mat-label>Enter Policy Number</mat-label>
+        <input matInput placeholder="POL###" type="text" name="policyNo" [(ngModel)]="claims.policyNo" />
+        <mat-hint>Ex: POL123456</mat-hint>
+      </mat-form-field>
+
+      <mat-accordion class="example-headers-align" multi>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title> Insurer Details </mat-panel-title>
+            <mat-panel-description>
+              Provide all necessary details
+              <mat-icon class="header-icon">account_circle</mat-icon>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+
+          <div class="form-section">
+            <mat-form-field appearance="outline" class="input">
+              <mat-label>Insurer Name</mat-label>
+              <input matInput placeholder="Full Name" type="text" name="name" [(ngModel)]="claims.insurer.name" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input">
+              <mat-label>Date of Birth</mat-label>
+              <input matInput [matDatepicker]="picker" placeholder="MM/DD/YYYY" [(ngModel)]="claims.insurer.dob"
+                name="dob" />
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input">
+              <mat-label>Address</mat-label>
+              <input matInput placeholder="Enter full address" type="text" name="address"
+                [(ngModel)]="claims.insurer.address" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input">
+              <mat-label>Email</mat-label>
+              <input matInput placeholder="name@example.com" type="email" name="email"
+                [(ngModel)]="claims.insurer.email" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="input">
+              <mat-label>Mobile Number</mat-label>
+              <input matInput placeholder="+91" type="tel" name="mobile_no" [(ngModel)]="claims.insurer.mobile_no" />
+            </mat-form-field>
+          </div>
+        </mat-expansion-panel>
+      </mat-accordion>
+
+      <section>
+        <div class="example-button-row">
+          <button mat-flat-button type="submit">Submit</button>
+          <button mat-raised-button color="warn" (click)="resetForm()">Reset Form</button>
+        </div>
+  
+          
+      </section>
+    </form>
+  </div>
+</div>
