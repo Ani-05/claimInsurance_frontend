@@ -1,51 +1,112 @@
 import { Component, OnInit } from '@angular/core';
 import { ClaimServiceService } from '../claim.service.service';
 import { Claim } from '../claim';
-
 import { HttpErrorResponse } from '@angular/common/http';
+import { MatTableDataSource } from '@angular/material/table';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-claim-list',
   standalone: false,
   templateUrl: './claim-list.component.html',
-  styleUrl: './claim-list.component.css'
+  styleUrls: ['./claim-list.component.css']
 })
 export class ClaimListComponent implements OnInit {
 
-  claimlist: Claim[]=[];
+  searchKey: string = '';
+  filterBy: string = 'claimNo';
+  claimlist: Claim[] = [];
+  dataSource: Claim[] = [];
+  displayedColumns: string[] = ['claimNo', 'claimAmount', 'claimType', 'policyNo', 'insurer', 'edit','delete'];
 
-  dataSource:Claim[]=[];
+  constructor(private claimservice: ClaimServiceService,
+    private router: Router) {
+      this.loadAllClaims();
+     }
 
-  displayedColumns: string[] = ['claimNo', 'claimAmount', 'claimType', 'policyNo', 'insurer','delete'];
+  ngOnInit(): void {
+    this.loadAllClaims();
+  }
 
-   constructor(private claimservice:ClaimServiceService){
-this.getEmployee();
-   }
+  editClaim(claimNo:string):void{
+    this.router.navigate(['/claimID', claimNo]);
+  }
 
-   ngOnInit(): void {
-   
-   }
-
-   deleteClaim(claimNo: string): void {
+  deleteClaim(claimNo: string): void {
     this.claimservice.deleteClaim(claimNo).subscribe({
       next: (res) => {
         console.log(res);
-        this.getEmployee();
+        this.loadAllClaims(); 
       },
-      error: (err: HttpErrorResponse) => console.error(err)
+      error: (err: HttpErrorResponse) => console.error("Error deleting claim:", err)
     });
   }
+
   
-   
-
-  getEmployee():void{
+  loadAllClaims(): void {
     this.claimservice.getEmployee().subscribe({
-      next: (res:Claim[]) =>{this.claimlist = res;
-        this.dataSource = res;console.log(this.claimlist)} ,
-
-    error: (err) => console.error("Failed to save claim", err)
-    })
-
+      next: (res: Claim[]) => {
+        this.dataSource = res; 
+        console.log("Claims loaded", this.dataSource);
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error("Failed to load claims", err);
+      }
+    });
   }
 
+
+  applyFilter(): void {
+    if (this.filterBy === 'claimNo') {
+      this.searchByClaimNo(this.searchKey);
+    } else if (this.filterBy === 'claimType') {
+      this.searchByClaimType(this.searchKey);
+    } else if (this.filterBy === 'policyNo') {
+      this.searchByPolicyNo(this.searchKey);
+    }
+  }
+
+  
+  searchByClaimNo(claimNo: string): void {
+    this.claimservice.searchByClaimNo(claimNo).subscribe({
+      next: (data) => {
+        this.dataSource = data ? [data] : []; 
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error("Error fetching claim by Claim No:", err);
+        this.dataSource = [];  
+      }
+    });
+  }
+
+  searchByClaimType(claimType: string): void {
+    this.claimservice.searchByClaimType(claimType).subscribe({
+      next: (data) => {
+        this.dataSource = data; 
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error("Error fetching claims by Claim Type:", err);
+        this.dataSource = [];  
+      }
+    });
+  }
+
+  
+  searchByPolicyNo(policyNo: string): void {
+    this.claimservice.searchByPolicy(policyNo).subscribe({
+      next: (data) => {
+        this.dataSource = data; 
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error("Error fetching claims by Policy No:", err);
+        this.dataSource = [];  
+      }
+    });
+  }
+
+ 
+  clearSearch(): void {
+    this.searchKey = '';  
+    this.loadAllClaims(); 
+  }
 }

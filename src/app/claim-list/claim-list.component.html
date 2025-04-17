@@ -1,69 +1,97 @@
 <section>
-  <div class="example-button-row-list">      
+  <div class="example-button-row-list">
     <button mat-stroked-button [routerLink]="'/claims'">Back to Claim form</button>
   </div>
 </section>
 
 <div class="container">
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-  
-    
-      <ng-container matColumnDef="claimNo">
-        <th mat-header-cell *matHeaderCellDef> Claim No </th>
-        <td mat-cell *matCellDef="let element"> {{ element.claimNo }} </td>
-      </ng-container>
-  
-   
-      <ng-container matColumnDef="claimType">
-        <th mat-header-cell *matHeaderCellDef> Type </th>
-        <td mat-cell *matCellDef="let element"> {{ element.claimType }} </td>
-      </ng-container>
-  
-     
-      <ng-container matColumnDef="claimAmount">
-        <th mat-header-cell *matHeaderCellDef> Amount </th>
-        <td mat-cell *matCellDef="let element"> ₹{{ element.claimAmount }} </td>
-      </ng-container>
-  
+  <div style="display: flex; justify-content: center; margin-bottom: 16px;">
+    <div class="search-container">
       
-      <ng-container matColumnDef="policyNo">
-        <th mat-header-cell *matHeaderCellDef> Policy No </th>
-        <td mat-cell *matCellDef="let element"> {{ element.policyNo }} </td>
-      </ng-container>
-  
-     
-      <ng-container matColumnDef="insurer">
-        <th mat-header-cell *matHeaderCellDef> Insurer </th>
-        <td mat-cell *matCellDef="let element">
-          <div class="insurer-info">
-            <strong>Name:</strong> {{ element.insurer.name }} <br>
-            <strong>Email:</strong> {{ element.insurer.email }} <br>
-            <strong>Phone:</strong> {{ element.insurer.mobile_no }} <br>
-            <strong>Address:</strong> {{ element.insurer.address }} <br>
-            <strong>DOB:</strong> {{ element.insurer.dob | date: 'mediumDate' }}
-          </div>
-        </td>
-      </ng-container>
-  
+      <mat-form-field appearance="outline">
+        <mat-label>Filter By</mat-label>
+        <mat-select [(value)]="filterBy" (selectionChange)="applyFilter()">
+          <mat-option value="claimNo">Claim Number</mat-option>
+          <mat-option value="claimType">Claim Type</mat-option>
+          <mat-option value="policyNo">Policy Number</mat-option>
+        </mat-select>
+      </mat-form-field>
 
-      <ng-container matColumnDef="delete">
-        <th mat-header-cell *matHeaderCellDef></th>
-        <td mat-cell *matCellDef="let element"> 
-          <div class="example-button-row">
-            <div class="example-flex-container">
-              <button mat-icon-button aria-label="Example icon button with a open in new tab icon" (click)="deleteClaim(element.claimNo)">
-                <mat-icon style="color: red;">delete</mat-icon>
-              </button>
-            </div>
-          </div>
-        </td>
-        
-      </ng-container>
-       
+      <mat-form-field appearance="outline" style="flex-grow: 1; min-width: 250px;">
+        <mat-label>Search</mat-label>
+        <input matInput placeholder="Search..." [(ngModel)]="searchKey" (keyup)="applyFilter()" />
+        <button *ngIf="searchKey" matSuffix mat-icon-button aria-label="Clear" (click)="clearSearch()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-form-field>
 
-   
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+      <button mat-stroked-button color="warn" (click)="clearSearch()">Reset Filter</button>
+    </div>
   </div>
-  
+
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 full-width-table">
+
+    <ng-container matColumnDef="claimNo">
+      <th mat-header-cell *matHeaderCellDef> Claim No </th>
+      <td mat-cell *matCellDef="let element"> {{ element.claimNo }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="claimType">
+      <th mat-header-cell *matHeaderCellDef> Type </th>
+      <td mat-cell *matCellDef="let element"> {{ element.claimType }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="claimAmount">
+      <th mat-header-cell *matHeaderCellDef> Amount </th>
+      <td mat-cell *matCellDef="let element"> ₹{{ element.claimAmount }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="policyNo">
+      <th mat-header-cell *matHeaderCellDef> Policy No </th>
+      <td mat-cell *matCellDef="let element"> {{ element.policyNo }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="insurer">
+      <th mat-header-cell *matHeaderCellDef> Insurer </th>
+      <td mat-cell *matCellDef="let element">
+        <div class="insurer-info">
+          <strong>Name:</strong> {{ element.insurer.name }} <br>
+          <strong>Email:</strong> {{ element.insurer.email }} <br>
+          <strong>Phone:</strong> {{ element.insurer.mobile_no }} <br>
+          <strong>Address:</strong> {{ element.insurer.address }} <br>
+          <strong>DOB:</strong> {{ element.insurer.dob | date: 'mediumDate' }}
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="edit">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element">
+        <div class="example-button-row">
+          <div class="example-flex-container">
+            <button mat-icon-button aria-label="Edit Claim" (click)="editClaim(element.claimNo)">
+              <mat-icon style="color: rgb(53, 10, 83);">edit</mat-icon>
+            </button>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="delete">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element">
+        <div class="example-button-row">
+          <div class="example-flex-container">
+            <button mat-icon-button aria-label="Delete Claim" (click)="deleteClaim(element.claimNo)">
+              <mat-icon style="color: red;">delete</mat-icon>
+            </button>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

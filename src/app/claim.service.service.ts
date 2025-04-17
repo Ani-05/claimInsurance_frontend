@@ -23,4 +23,16 @@ export class ClaimServiceService {
   public deleteClaim(claimNo: String){
     return this.httpClient.delete(`${this.api}/${claimNo}`)
   }
+
+  public searchByClaimNo(claimNo: string): Observable<Claim> {
+    return this.httpClient.get<Claim>(`${this.api}/search/by-claimNo/${claimNo}`);
+  }
+
+  public searchByClaimType(claimType: string): Observable<Claim[]> {
+    return this.httpClient.get<Claim[]>(`${this.api}/search/by-claimType/${claimType}`);
+  }
+
+  public searchByPolicy(policyNo: string): Observable<Claim[]> {
+    return this.httpClient.get<Claim[]>(`${this.api}/search/by-policy/${policyNo}`);
+  }
 }
