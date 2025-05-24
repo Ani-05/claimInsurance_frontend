@@ -20,8 +20,12 @@ export class ClaimServiceService {
     return this.httpClient.get<Claim[]>(`${this.api}/entry`)
   }
 
+  public updateInsurerFields(payload: { [key: string]: string }): Observable<any> {
+    return this.httpClient.patch(`${this.api}/claim/update-insurer-fields`, payload);
+  }
+
   public deleteClaim(claimNo: String){
-    return this.httpClient.delete(`${this.api}/${claimNo}`)
+    return this.httpClient.delete(`${this.api}/${claimNo}`,{ responseType: 'text' })
   }
 
   public searchByClaimNo(claimNo: string): Observable<Claim> {

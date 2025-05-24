@@ -29,8 +29,9 @@ export class ClaimListComponent implements OnInit {
   }
 
   editClaim(claimNo:string):void{
-    this.router.navigate(['/claimID', claimNo]);
+    this.router.navigate(['/claim', claimNo]);
   }
+  
 
   deleteClaim(claimNo: string): void {
     this.claimservice.deleteClaim(claimNo).subscribe({

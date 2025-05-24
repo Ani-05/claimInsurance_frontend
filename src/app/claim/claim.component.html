@@ -1,18 +1,25 @@
-
-
 <section>
-  <div class="example-button-row-list">      
-    <button mat-stroked-button [routerLink]="'/claim_list'">Claim-List</button>
+  <div class="example-button-row-list">
+    <button mat-stroked-button [routerLink]="'/claim_list'">Claim List</button>
   </div>
 </section>
+
 <div class="container mat-elevation-z2">
-  
-  <h2 class="form-heading">Claim Request Form</h2>
+  <h2 class="form-heading">{{ isEdit ? 'Edit Claim Form' : 'Claim Request Form' }}</h2>
+
+  <!-- Success/Error messages section -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
   <div class="con">
-    <form #claimForm="ngForm" (ngSubmit)="saveEmployee(claimForm)">
+    <form #claimForm="ngForm" (ngSubmit)="isEdit ? updateInsurer(claimForm) : saveEmployee(claimForm)">
       <mat-form-field appearance="outline" class="input">
         <mat-label>Select Claim Type</mat-label>
-        <mat-select [(ngModel)]="claims.claimType" name="claimType">
+        <mat-select [(ngModel)]="claims.claimType" name="claimType" [disabled]="isEdit">
           <mat-option value="CASHLESS">Cashless</mat-option>
           <mat-option value="REIMBURSEMENT">Reimbursement</mat-option>
         </mat-select>
@@ -20,13 +27,13 @@
 
       <mat-form-field appearance="outline" class="input">
         <mat-label>Enter Claim Amount</mat-label>
-        <input matInput placeholder="Enter Amount" type="number" name="claimAmount" [(ngModel)]="claims.claimAmount" />
+        <input matInput placeholder="Enter Amount" type="number" name="claimAmount" [(ngModel)]="claims.claimAmount" [disabled]="isEdit" />
         <mat-hint>In INR</mat-hint>
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="input">
         <mat-label>Enter Policy Number</mat-label>
-        <input matInput placeholder="POL###" type="text" name="policyNo" [(ngModel)]="claims.policyNo" />
+        <input matInput placeholder="POL###" type="text" name="policyNo" [(ngModel)]="claims.policyNo" [disabled]="isEdit" />
         <mat-hint>Ex: POL123456</mat-hint>
       </mat-form-field>
 
@@ -43,7 +50,7 @@
           <div class="form-section">
             <mat-form-field appearance="outline" class="input">
               <mat-label>Insurer Name</mat-label>
-              <input matInput placeholder="Full Name" type="text" name="name" [(ngModel)]="claims.insurer.name" />
+              <input matInput placeholder="Full Name" type="text" name="name" [(ngModel)]="claims.insurer.name"  />
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="input">
@@ -63,12 +70,12 @@
             <mat-form-field appearance="outline" class="input">
               <mat-label>Email</mat-label>
               <input matInput placeholder="name@example.com" type="email" name="email"
-                [(ngModel)]="claims.insurer.email" />
+                [(ngModel)]="claims.insurer.email"  />
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="input">
               <mat-label>Mobile Number</mat-label>
-              <input matInput placeholder="+91" type="tel" name="mobile_no" [(ngModel)]="claims.insurer.mobile_no" />
+              <input matInput placeholder="+91" type="tel" name="mobile_no" [(ngModel)]="claims.insurer.mobile_no"  />
             </mat-form-field>
           </div>
         </mat-expansion-panel>
@@ -76,11 +83,9 @@
 
       <section>
         <div class="example-button-row">
-          <button mat-flat-button type="submit">Submit</button>
-          <button mat-raised-button color="warn" (click)="resetForm()">Reset Form</button>
+          <button mat-flat-button type="submit">{{ isEdit ? 'Update' : 'Submit' }}</button>
+          <button mat-raised-button color="warn" type="button" (click)="resetForm()">Reset Form</button>
         </div>
-  
-          
       </section>
     </form>
   </div>

@@ -1,7 +1,7 @@
 import { Insurer } from "./insurer";
 
 export interface Claim {
-    claimNo?:String;
+    claimNo?:string;
     claimType:String;
     policyNo:String;
     claimAmount:Number;

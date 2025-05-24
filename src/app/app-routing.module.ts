@@ -8,6 +8,7 @@ import { ClaimListComponent } from './claim-list/claim-list.component';
 const routes: Routes = [
   {path:"header", component: HeaderComponent},
   {path:"claims", component: ClaimComponent},
+  { path: 'claim/:claimNo', component: ClaimComponent },
   {path:"claim_list",component:ClaimListComponent},
   {path:"", component: HomeComponent}
 ];
